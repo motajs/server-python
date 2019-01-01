@@ -70,6 +70,15 @@ def mainpost(urlstr,body):
             if op['name']=='writeFile-base64' and op['func']=='open':
                 with open(filename,'wb') as fid:
                     out=str(fid.write(base64.b64decode(op['args'][1])))
+            if op['name']=='writeMultiFiles' and op['func']=='writeMulti':
+                def writeMulti(filenames,datastrs):
+                    out=0
+                    for filename,datastr in zip(filenames,datastrs):
+                        with open(filename,'wb') as fid:
+                            out+=fid.write(base64.b64decode(datastr))
+                    return out
+                filenames=filename
+                out=str(writeMulti(filenames,op['args'][1]))
             if op['name']=='readdir' and op['func']=='listdir':
                 path=filename
                 if not os.path.exists(path):
